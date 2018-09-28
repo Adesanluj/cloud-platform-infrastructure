@@ -87,7 +87,8 @@ EOF
 resource "aws_security_group" "bastion" {
   name        = "${local.bastion_fqdn}"
   description = "Security group for bastion"
-  vpc_id      = "${module.cluster_vpc.vpc_id}"
+  # vpc_id      = "${module.cluster_vpc.vpc_id}"
+  vpc_id      = "vpc-02c5a47b9609d7c17"
 
   // non-standard port to reduce probes
   ingress {
@@ -180,7 +181,8 @@ resource "aws_autoscaling_group" "bastion" {
   health_check_type         = "EC2"
   force_delete              = true
   launch_configuration      = "${aws_launch_configuration.bastion.name}"
-  vpc_zone_identifier       = ["${module.cluster_vpc.public_subnets}"]
+  # vpc_zone_identifier       = ["${module.cluster_vpc.public_subnets}"]
+  vpc_zone_identifier       = ["subnet-009fe636abc128c99","subnet-0ca5542bd80c143bb","subnet-0d20851d0ebefdb3c"]
   default_cooldown          = 60
 
   tags = [
