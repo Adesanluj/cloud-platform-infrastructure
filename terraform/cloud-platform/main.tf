@@ -23,7 +23,7 @@ data "terraform_remote_state" "global" {
 
 locals {
   cluster_name             = "${terraform.workspace}"
-  cluster_base_domain_name = "${local.cluster_name}.k8s.cloud-platform"
+  cluster_base_domain_name = "${local.cluster_name}.k8s.cloud-platform.dsd.io"
 }
 
 # Modules

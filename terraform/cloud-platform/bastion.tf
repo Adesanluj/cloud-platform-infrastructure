@@ -31,7 +31,7 @@ resource "aws_eip" "bastion" {
   vpc = true
 
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = true
   }
 
   tags {
