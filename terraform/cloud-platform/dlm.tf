@@ -45,7 +45,7 @@ resource "aws_dlm_lifecycle_policy" "Etcd-Backup" {
     }
 
     target_tags {
-      Snapshot = "KubernetesCluster:${local.cluster_base_domain_name}"
+      Snapshot = "KubernetesCluster:${local.cluster_base_domain_name}, k8s.io/role/master:1"
     }
   }
 }
