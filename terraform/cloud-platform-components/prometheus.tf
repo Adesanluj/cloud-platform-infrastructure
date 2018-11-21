@@ -41,10 +41,12 @@ resource "helm_release" "prometheus_operator" {
   name          = "prometheus-operator"
   chart         = "stable/prometheus-operator"
   namespace     = "monitoring"
-  recreate_pods = "true"  
+  recreate_pods = "true"
+
   values = [
     "${data.template_file.kube_prometheus.rendered}",
   ]
+
   depends_on = [
     "null_resource.deploy",
   ]
