@@ -10,7 +10,7 @@ grafana:
       enabled: "false"
 
     adminUser: "${random_username}"
-    adminPassword: "${random_password}"
+    adminPassword: 
 
   ingress:
     enabled: true

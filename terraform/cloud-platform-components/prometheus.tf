@@ -1,8 +1,4 @@
-resource "helm_repository" "coreos" {
-  name = "coreos"
-  url  = "https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/"
-}
-
+# Create class for persistent prometheus storage
 resource "kubernetes_storage_class" "prometheus_storage" {
   metadata {
     name = "prometheus-storage"
@@ -15,18 +11,7 @@ resource "kubernetes_storage_class" "prometheus_storage" {
   }
 }
 
-resource "helm_release" "prometheus_operator" {
-  name          = "prometheus-operator"
-  chart         = "prometheus-operator"
-  repository    = "${helm_repository.coreos.metadata.0.name}"
-  namespace     = "monitoring"
-  recreate_pods = "true"
-
-  depends_on = [
-    "null_resource.deploy",
-  ]
-}
-
+# Randomise Grafana username and password
 resource "random_id" "username" {
   byte_length = 8
 }
@@ -35,8 +20,9 @@ resource "random_id" "password" {
   byte_length = 8
 }
 
+# Build values.yaml for ${helm_release.prometheus_operator}
 data "template_file" "kube_prometheus" {
-  template = "${file("${path.module}/templates/kube-prometheus.yaml.tpl")}"
+  template = "${file("${path.module}/templates/prometheus-operator.yaml")}"
 
   vars {
     alertmanager_ingress = "https://alertmanager.apps.${data.terraform_remote_state.cluster.cluster_domain_name}"
@@ -50,19 +36,16 @@ data "template_file" "kube_prometheus" {
   }
 }
 
-resource "helm_release" "kube_prometheus" {
-  name          = "kube-prometheus"
-  chart         = "kube-prometheus"
-  repository    = "${helm_repository.coreos.metadata.0.name}"
+# Prometheus-operator install from https://github.com/helm/charts/tree/master/stable/prometheus-operator
+resource "helm_release" "prometheus_operator" {
+  name          = "prometheus-operator"
+  chart         = "stable/prometheus-operator"
   namespace     = "monitoring"
-  recreate_pods = "true"
-
+  recreate_pods = "true"  
   values = [
     "${data.template_file.kube_prometheus.rendered}",
   ]
-
   depends_on = [
     "null_resource.deploy",
-    "helm_release.prometheus_operator",
   ]
 }
