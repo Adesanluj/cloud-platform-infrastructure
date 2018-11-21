@@ -22,7 +22,7 @@ resource "random_id" "password" {
 
 # Build values.yaml for ${helm_release.prometheus_operator}
 data "template_file" "kube_prometheus" {
-  template = "${file("${path.module}/templates/prometheus-operator.yaml")}"
+  template = "${file("${path.module}/templates/prometheus-operator.yaml.tpl")}"
 
   vars {
     alertmanager_ingress = "https://alertmanager.apps.${data.terraform_remote_state.cluster.cluster_domain_name}"
